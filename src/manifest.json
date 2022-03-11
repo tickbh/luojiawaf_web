@@ -1,0 +1,22 @@
+{
+  "name": "浪成于微澜之间",
+  "short_name": "浪成于微澜之间",
+  "display": "standalone",
+  "start_url": "./?utm_source=homescreen",
+  "theme_color": "#002140",
+  "background_color": "#001529",
+  "icons": [
+    {
+      "src": "cc_attck_times.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "cc_attck_times.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "cc_attck_times.png",
+      "sizes": "512x512"
+    }
+  ]
+}
