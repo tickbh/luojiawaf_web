@@ -46,12 +46,12 @@ export default defineConfig({
   //   basePath: '/',
   // },
   // fastRefresh: {},
-  outputPath: '../WebPublish/',
+  outputPath: '../luojia_web_publish/',
   nodeModulesTransform: { type: 'none' },
   // mfsu: {},
   // webpack5: {},
   exportStatic: {},
   define: {
-    API_URL: ' http://c.haode.fit:6988/', // API��ַ
+    API_URL: ' http://c.haode.fit:6988/', // API锟斤拷址
   },
 });
