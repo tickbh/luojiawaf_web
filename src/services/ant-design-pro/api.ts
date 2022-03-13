@@ -2,20 +2,24 @@
 /* eslint-disable */
 import { request } from 'umi';
 
-export let request_url = "http://127.0.0.1:6988";
-let my_token: string = localStorage.getItem("waf-token") || "";
+const { NODE_ENV } = process.env;
+export let request_url = 'http://127.0.0.1:6988';
+if (NODE_ENV != 'development') {
+  request_url = '';
+}
+let my_token: string = localStorage.getItem('waf-token') || '';
 
 export function set_access_token(token: string) {
   my_token = token;
-  localStorage.setItem("waf-token", token);
+  localStorage.setItem('waf-token', token);
 }
 
 function do_request<T>(url: string, options: { [key: string]: any }): Promise<T> {
-  if(url.indexOf("/waf/login") == -1) {
-    if(!options["headers"]) {
-      options["headers"] = {}
+  if (url.indexOf('/waf/login') == -1) {
+    if (!options['headers']) {
+      options['headers'] = {};
     }
-    options["headers"]["X-Token"] = my_token
+    options['headers']['X-Token'] = my_token;
   }
   return request(request_url + url, options);
 }
@@ -48,7 +52,6 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
     ...(options || {}),
   });
 }
-
 
 /** 修改密码 POST /waf/modify_password */
 export async function modify_password(body: any, options?: { [key: string]: any }) {
