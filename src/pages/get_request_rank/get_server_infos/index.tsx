@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Line } from '@ant-design/plots';
+import { Line } from '@ant-design/charts';
 import {
   Button,
   Card,
@@ -26,7 +26,8 @@ import ModalBuilder from '@/pages/Components/ModalBuilder';
 import { PoweroffOutlined } from '@ant-design/icons';
 
 const Index = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([] as any);
+
   const [sort, setSort] = useState('name'); // 排序升降
   const [order, setOrder] = useState('asc'); // 排序类型
   const [page, setPage] = useState(1); // 页数
@@ -141,6 +142,17 @@ const Index = () => {
     setBlockNameList(nameList);
   };
 
+  function get_date(timer: string) {
+    const timestamp = Number(timer);
+    const date = new Date(timestamp * 1000);
+    return ((date.getHours() + 8) % 24) + ':' + date.getMinutes() + ':' + date.getSeconds();
+  }
+
+  function get_network_speed(speed: string) {
+    const timestamp = Number(speed);
+    return (timestamp / 1024).toFixed(2) + 'KB/s';
+  }
+
   // 当页数和展示数量发生改变时,重新发起请求
   const _get_server_list = async () => {
     if (blockNameList.length == 0) {
@@ -148,7 +160,47 @@ const Index = () => {
     }
     const value = await get_server_infos({ ...values });
     if (value.success > 0) {
-      setTableData(value);
+      console.log(value);
+
+      const fix_data = [];
+      for (const idx in value.cpu_infos) {
+        const cpu = value.cpu_infos[idx];
+        const list = cpu.split('/');
+        console.log(cpu, 'list', list);
+        fix_data.push({
+          timer: get_date(list[0]),
+          value: list[1],
+          category: 'Cpu占用率',
+        });
+      }
+
+      for (const idx in value.network_infos) {
+        const info = value.network_infos[idx];
+        const list = info.split('/');
+        const timer = get_date(list[0]);
+        fix_data.push({
+          timer: timer,
+          value: get_network_speed(list[1]),
+          category: '上行流量',
+        });
+        fix_data.push({
+          timer: timer,
+          value: get_network_speed(list[1]),
+          category: '下行流量',
+        });
+      }
+      for (const idx in value.mem_infos) {
+        const info = value.mem_infos[idx];
+        const list = info.split('/');
+
+        fix_data.push({
+          timer: get_date(list[0]),
+          value: (Number(list[1]) / Number(list[2])).toFixed(2) + '%',
+          category: '内存使用率',
+        });
+      }
+      console.log(fix_data);
+      setData(fix_data);
     }
     return value;
   };
@@ -377,16 +429,17 @@ const Index = () => {
       </Row>
     );
   };
-  // 将表格输出内容分装成组件
 
   const config = {
     data,
-    padding: 'auto',
-    xField: 'Date',
-    yField: 'scales',
-    xAxis: {
-      // type: 'timeCat',
-      tickCount: 5,
+    xField: 'timer',
+    yField: 'value',
+    seriesField: 'category',
+    yAxis: {
+      label: {
+        // 数值格式化为千分位
+        // formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
+      },
     },
   };
 
@@ -398,22 +451,7 @@ const Index = () => {
           <Card style={{ borderBottom: 0 }} size="small">
             {beforesearchLayout()}
           </Card>
-          <Table
-            // className={Style.carMarginTop}
-            // rowSelection={rowSelection}
-            columns={ColumnsBuilder(useTableData?.columns, OpenUrl)}
-            dataSource={useTableData?.dataSource}
-            scroll={{ y: 600 }}
-            pagination={false}
-            loading={loadings}
-            onChange={tableChangeHandler}
-            showSorterTooltip={true}
-            bordered
-            // summary={getTableData?.summary}
-            // footer={ tableData.summary}
-          />
-          {afterTableLayout()}
-
+          监控列表
           <Line {...config} />
         </Card>
       </React.Fragment>
