@@ -67,6 +67,12 @@ export default [
             wrappers: [RouteWatcher],
           },
           {
+            name: 'URL白名单',
+            path: 'get_whiteurl_list',
+            component: './get_request_rank/get_whiteurl_list',
+            wrappers: [RouteWatcher],
+          },
+          {
             name: '随机访问列表',
             path: 'get_client_ip_visit',
             component: './get_request_rank/get_client_ip_visit',
@@ -76,6 +82,12 @@ export default [
             name: '渗透攻击列表',
             path: 'get_client_attack_visits',
             component: './get_request_rank/get_client_attack_visits',
+            wrappers: [RouteWatcher],
+          },
+          {
+            name: '服务器信息',
+            path: 'get_server_infos',
+            component: './get_request_rank/get_server_infos',
             wrappers: [RouteWatcher],
           },
         ],

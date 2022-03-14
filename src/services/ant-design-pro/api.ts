@@ -490,6 +490,31 @@ export async function get_error_list( //获取高防列表
   });
 }
 
+export async function get_server_infos( //获取服务器信息
+  params: {
+    // query
+    /** 当前的页码 */
+    page?: number;
+    /** 页面的容量 */
+    pagecount?: number;
+    /** 页面的容量 */
+    name?: string;
+    /** 页面的容量 */
+    status?: string;
+    /** 页面的容量 */
+    yesterday?: number | boolean;
+  },
+  options?: { [key: string]: any },
+) {
+  return do_request<any>('/waf/get_server_infos?', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 export async function get_client_attack_visits( //获取高防列表
   params: {
     // query
@@ -708,6 +733,49 @@ export async function del_record_ip_client(
 ) {
   //删除封禁IP
   return do_request<any>('/waf/del_record_ip_client?', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+export async function get_whiteurl_list( //负载均衡
+  params: {
+    // query
+    /** 当前的页码 */
+    page?: number;
+    /** 页面的容量 */
+    pagecount?: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return do_request<any>('/waf/get_whiteurl_list?', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
+export async function add_whiteurl_client(body: API.LoginParams, options?: { [key: string]: any }) {
+  //删除封禁IP
+  return do_request<any>('/waf/add_whiteurl_client?', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+export async function del_whiteurl_client(body: API.LoginParams, options?: { [key: string]: any }) {
+  //删除封禁IP
+  return do_request<any>('/waf/del_whiteurl_client?', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
