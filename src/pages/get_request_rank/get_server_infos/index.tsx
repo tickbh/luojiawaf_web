@@ -27,6 +27,7 @@ import { PoweroffOutlined } from '@ant-design/icons';
 
 const Index = () => {
   const [data, setData] = useState([] as any);
+  const [netData, setNetData] = useState([] as any);
 
   const [sort, setSort] = useState('name'); // 排序升降
   const [order, setOrder] = useState('asc'); // 排序类型
@@ -145,12 +146,12 @@ const Index = () => {
   function get_date(timer: string) {
     const timestamp = Number(timer);
     const date = new Date(timestamp * 1000);
-    return ((date.getHours() + 8) % 24) + ':' + date.getMinutes() + ':' + date.getSeconds();
+    return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   }
 
   function get_network_speed(speed: string) {
     const timestamp = Number(speed);
-    return (timestamp / 1024).toFixed(2) + 'KB/s';
+    return Number((timestamp / 1024).toFixed(2));
   }
 
   // 当页数和展示数量发生改变时,重新发起请求
@@ -160,13 +161,10 @@ const Index = () => {
     }
     const value = await get_server_infos({ ...values });
     if (value.success > 0) {
-      console.log(value);
-
       const fix_data = [];
       for (const idx in value.cpu_infos) {
         const cpu = value.cpu_infos[idx];
         const list = cpu.split('/');
-        console.log(cpu, 'list', list);
         fix_data.push({
           timer: get_date(list[0]),
           value: list[1],
@@ -174,21 +172,6 @@ const Index = () => {
         });
       }
 
-      for (const idx in value.network_infos) {
-        const info = value.network_infos[idx];
-        const list = info.split('/');
-        const timer = get_date(list[0]);
-        fix_data.push({
-          timer: timer,
-          value: get_network_speed(list[1]),
-          category: '上行流量',
-        });
-        fix_data.push({
-          timer: timer,
-          value: get_network_speed(list[1]),
-          category: '下行流量',
-        });
-      }
       for (const idx in value.mem_infos) {
         const info = value.mem_infos[idx];
         const list = info.split('/');
@@ -201,6 +184,25 @@ const Index = () => {
       }
       console.log(fix_data);
       setData(fix_data);
+
+      const network_data = [];
+      for (const idx in value.network_infos) {
+        const info = value.network_infos[idx];
+        const list = info.split('/');
+        console.log('info == ', info, 'list = ', list);
+        const timer = get_date(list[0]);
+        network_data.push({
+          timer: timer,
+          value: get_network_speed(list[1]),
+          category: '上行流量',
+        });
+        network_data.push({
+          timer: timer,
+          value: get_network_speed(list[2]),
+          category: '下行流量',
+        });
+      }
+      setNetData(network_data);
     }
     return value;
   };
@@ -430,6 +432,20 @@ const Index = () => {
     );
   };
 
+  const netconfig = {
+    data: netData,
+    xField: 'timer',
+    yField: 'value',
+    seriesField: 'category',
+    yAxis: {
+      label: {
+        formatter: (v: string) => '' + Number(v).toFixed(2) + 'KB/s',
+        // 数值格式化为千分位
+        // formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
+      },
+    },
+  };
+
   const config = {
     data,
     xField: 'timer',
@@ -452,6 +468,7 @@ const Index = () => {
             {beforesearchLayout()}
           </Card>
           监控列表
+          <Line {...netconfig} />
           <Line {...config} />
         </Card>
       </React.Fragment>
