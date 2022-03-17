@@ -42,9 +42,13 @@ const Index = () => {
   const [searchValue, setSearchValue] = useState('');
   const [blockNameList, setBlockNameList] = useState([] as any);
   const [formValue, setFormValue] = useState({} as any);
+  const config_list_key = {
+    log: `日志`,
+    allow: `白名单`,
+    deny: `黑名单`,
+  };
   const keyList = ['ip', 'action', 'actions'];
   const NameList = ['IP', '动作', '操作'];
-  const { Search } = Input;
   const { Option } = Select;
   const values = {
     page: page,
@@ -277,6 +281,7 @@ const Index = () => {
       actionFunc: (_values: any) => actionFuncType[type](_values),
       modalKeyList: KeyNameList,
       modalNameList: setInputKeyName(keyList, NameList),
+      config_list_key: config_list_key,
       loadings: loadings,
     });
   };
@@ -328,38 +333,6 @@ const Index = () => {
         <Row>
           <Col flex="1 1 200px">
             <Space>
-              {/* <Search placeholder="input search text" onSearch={onSearch} enterButton /> */}
-              {/* <Select
-                // defaultValue={defaultName}
-                // key={defaultName}
-                value={blockname}
-                placeholder="请输入高防名称"
-                style={{ width: 120 }}
-                onChange={selectOnchange}
-              >
-                {blockNameList}
-              </Select>
-              <Select
-                defaultValue="500"
-                placeholder="请输入异常状态"
-                style={{ width: 120 }}
-                allowClear
-                onChange={(value) => setBlockstatus(value)}
-              >
-                <Option value="404">404</Option>
-                <Option value="500">500</Option>
-                <Option value="502">502</Option>
-              </Select> */}
-
-              <Button
-                key="button"
-                type="primary"
-                icon={<PoweroffOutlined />}
-                // loading={result.loading}
-                onClick={() => enterLoading(!loadings)}
-              >
-                查询
-              </Button>
               <Button
                 onClick={() => {
                   setFormData({
@@ -367,6 +340,7 @@ const Index = () => {
                     actionFunc: (_values: any) => _add_record_ip_client(_values),
                     modalKeyList: getKeyNameList(keyList),
                     modalNameList: setInputKeyName(keyList, NameList),
+                    config_list_key: config_list_key,
                     loadings: loadings,
                   });
                 }}
