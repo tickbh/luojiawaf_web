@@ -26,6 +26,7 @@ const Index = () => {
   const [formValue, setFormValue] = useState({} as any);
   const keyList = ['key1', 'value', 'keyDetails', 'actions'];
   const NameList = ['Key', '参数值', '配置详情', '操作'];
+  const primary = 'key1';
   const autocomplete_key = {
     key1: {
       'limit_ip:all': '如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
@@ -64,7 +65,7 @@ const Index = () => {
         {_value}
       </span>
     );
-    nowText = (autocomplete_key[_keyName] || '未匹配到对应的key ') + '-> 当前 ';
+    nowText = (autocomplete_key[primary][_keyName] || '未匹配到对应的key ') + '-> 当前 ';
     deatilsText.push(nowText);
     deatilsText.push(nowValue);
     return deatilsText;
@@ -238,6 +239,7 @@ const Index = () => {
       modalKeyList: KeyNameList,
       modalNameList: setInputKeyName(keyList, NameList),
       autocomplete_key,
+      primary,
       loadings: loadings,
     });
   };
@@ -312,6 +314,7 @@ const Index = () => {
                     modalKeyList: getKeyNameList(keyList),
                     modalNameList: setInputKeyName(keyList, NameList),
                     autocomplete_key,
+                    primary,
                     loadings: loadings,
                   });
                 }}
