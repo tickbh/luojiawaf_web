@@ -24,8 +24,8 @@ const Index = () => {
   const [searchValue, setSearchValue] = useState('');
 
   const [formValue, setFormValue] = useState({} as any);
-  const keyList = ['host', 'name', 'oriname', 'actions'];
-  const NameList = ['host', '名称', '当前名称', '操作'];
+  const keyList = ['host', 'name', 'actions'];
+  const NameList = ['host', '名称', '操作'];
   const { Search } = Input;
   const values = {
     page: page,
