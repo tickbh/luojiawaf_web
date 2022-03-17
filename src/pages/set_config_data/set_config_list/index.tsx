@@ -26,27 +26,30 @@ const Index = () => {
   const [formValue, setFormValue] = useState({} as any);
   const keyList = ['key1', 'value', 'keyDetails', 'actions'];
   const NameList = ['Key', '参数值', '配置详情', '操作'];
-  const config_list_key = {
-    'limit_ip:all': '如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
-    'limit_uri:all': '如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
-    not_wait_forbidden_ratio: `默认为0.5, 规则判断错序的比例 `,
-    not_wait_forbidden_min_len: `默认为20, 规则判断错序最小值 `,
-    min_all_visit_times: `默认为20, 规则判定总访问次数的起点值 `,
-    max_visit_idx_num: `默认为2, 排序最高的前两台占比 `,
-    max_visit_ratio: `默认为0.75, 即前2条访问量占总比值的比例 `,
-    default_forbidden_time: `禁用ip的默认时长, 默认为600即10分 `,
-    white_ip_check: `白名单检查 on 为开启 `,
-    forbidden_ip_check: `IP禁止检查 on 为开启- `,
-    limit_ip_check: `IP限制检查 on 为开启 `,
-    white_url_check: `白名单url检查 on 为开启 `,
-    post_attack_check: `post参数攻击请求on 为开启 `,
-    url_args_attack: `参数攻击请求on 为开启 `,
-    random_record_value: `随机记录的值, 100%则填10000 `,
-    'limit_wd': "针对星期的限制，1/2/4，表示星期一,星期二,星期四做限制",
-    'limit_time': "针对时间段的限制, 如(12:00-13:00/18:30-20:30)表示12点到13点, 18点半到20点半",
-    'limit_ip:127.0.0.1': '针对ip(127.0.0.1)如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
-    'limit_uri:/test/limit': '针对uri(/test/limit)如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
-    
+  const autocomplete_key = {
+    key1: {
+      'limit_ip:all': '如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
+      'limit_uri:all': '如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
+      not_wait_forbidden_ratio: `默认为0.5, 规则判断错序的比例 `,
+      not_wait_forbidden_min_len: `默认为20, 规则判断错序最小值 `,
+      min_all_visit_times: `默认为20, 规则判定总访问次数的起点值 `,
+      max_visit_idx_num: `默认为2, 排序最高的前两台占比 `,
+      max_visit_ratio: `默认为0.75, 即前2条访问量占总比值的比例 `,
+      default_forbidden_time: `禁用ip的默认时长, 默认为600即10分 `,
+      white_ip_check: `白名单检查 on 为开启 `,
+      forbidden_ip_check: `IP禁止检查 on 为开启- `,
+      limit_ip_check: `IP限制检查 on 为开启 `,
+      white_url_check: `白名单url检查 on 为开启 `,
+      post_attack_check: `post参数攻击请求on 为开启 `,
+      url_args_attack: `参数攻击请求on 为开启 `,
+      random_record_value: `随机记录的值, 100%则填10000 `,
+      limit_wd: '针对星期的限制，1/2/4，表示星期一,星期二,星期四做限制',
+      limit_time: '针对时间段的限制, 如(12:00-13:00/18:30-20:30)表示12点到13点, 18点半到20点半',
+      'limit_ip:127.0.0.1':
+        '针对ip(127.0.0.1)如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
+      'limit_uri:/test/limit':
+        '针对uri(/test/limit)如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
+    },
   };
   const { Search } = Input;
   const values = {
@@ -61,7 +64,7 @@ const Index = () => {
         {_value}
       </span>
     );
-    nowText = (config_list_key[_keyName] || '未匹配到对应的key ') + '-> 当前 ';
+    nowText = (autocomplete_key[_keyName] || '未匹配到对应的key ') + '-> 当前 ';
     deatilsText.push(nowText);
     deatilsText.push(nowValue);
     return deatilsText;
@@ -234,7 +237,7 @@ const Index = () => {
       actionFunc: (_values: any) => actionFuncType[type](_values),
       modalKeyList: KeyNameList,
       modalNameList: setInputKeyName(keyList, NameList),
-      config_list_key,
+      autocomplete_key,
       loadings: loadings,
     });
   };
@@ -308,7 +311,7 @@ const Index = () => {
                     actionFunc: (_values: any) => _add_config_info(_values),
                     modalKeyList: getKeyNameList(keyList),
                     modalNameList: setInputKeyName(keyList, NameList),
-                    config_list_key,
+                    autocomplete_key,
                     loadings: loadings,
                   });
                 }}

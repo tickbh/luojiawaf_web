@@ -18,7 +18,6 @@ import {
   get_record_ip_list,
   add_record_ip_client,
   del_record_ip_client,
-  search_forbidden_ip,
   get_block_list,
 } from '@/services/ant-design-pro/api';
 import ColumnsBuilder from '@/pages/Components/ColumnsBuilder';
@@ -42,10 +41,17 @@ const Index = () => {
   const [searchValue, setSearchValue] = useState('');
   const [blockNameList, setBlockNameList] = useState([] as any);
   const [formValue, setFormValue] = useState({} as any);
-  const config_list_key = {
-    log: `日志`,
-    allow: `白名单`,
-    deny: `黑名单`,
+  const autocomplete_key = {
+    action: {
+      log: `日志`,
+      allow: `白名单`,
+      deny: `黑名单`,
+    },
+  };
+  const primary = 'ip';
+  const tipItems = {
+    ip: '请输入IP',
+    action: '选择您要的行为',
   };
   const keyList = ['ip', 'action', 'actions'];
   const NameList = ['IP', '动作', '操作'];
@@ -240,16 +246,6 @@ const Index = () => {
     setLoadings(value);
   };
 
-  const onSearch = (value: any) => {
-    console.log(value);
-    setSearchValue(value);
-    enterLoading(!loadings);
-  };
-
-  const selectOnchange = (value: any) => {
-    setBlockname(value);
-  };
-
   const setInputKeyName = (_keyList: string[], _NameList: string[]) => {
     const modalNameList = {};
     (_keyList || []).forEach((key: string | number, index: string | number) => {
@@ -281,7 +277,9 @@ const Index = () => {
       actionFunc: (_values: any) => actionFuncType[type](_values),
       modalKeyList: KeyNameList,
       modalNameList: setInputKeyName(keyList, NameList),
-      config_list_key: config_list_key,
+      autocomplete_key,
+      tipItems,
+      primary,
       loadings: loadings,
     });
   };
@@ -340,7 +338,9 @@ const Index = () => {
                     actionFunc: (_values: any) => _add_record_ip_client(_values),
                     modalKeyList: getKeyNameList(keyList),
                     modalNameList: setInputKeyName(keyList, NameList),
-                    config_list_key: config_list_key,
+                    autocomplete_key,
+                    tipItems,
+                    primary,
                     loadings: loadings,
                   });
                 }}

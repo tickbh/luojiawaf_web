@@ -12,6 +12,7 @@ const ModalBuilder = ({
   setData: any;
 }) => {
   const [errTip, setErrTip] = useState(''); // 排序类型
+  const [helpDictTip, setHelpDictTip] = useState({} as any); // 排序类型
   const [modalkey, setModalkey] = useState(''); // 排序类型
   const [form] = Form.useForm();
   const {
@@ -19,21 +20,23 @@ const ModalBuilder = ({
     actionFunc,
     modalKeyList,
     loadings,
+    primary = 'name',
     keyItems = {},
+    tipItems = {},
+    autocomplete_key = {},
     modalNameList = {},
-    config_list_key = {},
   } = setData;
 
-  const getOptionsKey = () => {
+  const getAutoCompleteKey = (key: any) => {
     const options = [];
-    if (config_list_key) {
-      for (const name in config_list_key) {
+    if (autocomplete_key[key]) {
+      for (const name in autocomplete_key[key]) {
         options.push({ value: name, key: name });
       }
     }
     return options;
   };
-  const options = getOptionsKey();
+
   const showMsg = (msg: { success: number; err_msg: any }) => {
     if (msg.success < 0) {
       message.error({
@@ -70,10 +73,6 @@ const ModalBuilder = ({
     setErrTip('');
   };
 
-  const onChange = (_value: string) => {
-    setErrTip(`key = ${_value} 参数值 : ${config_list_key[_value] || '无可匹配规则'}`);
-  };
-
   const layout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 16 },
@@ -83,9 +82,9 @@ const ModalBuilder = ({
     const _Formlist = [];
     if (modalKeyList) {
       let disabled = false;
-      if(actionType == "update" && modalKeyList.name) {
-        modalKeyList.oriname = modalKeyList.name;
-        modalNameList.oriname = "原始名字"
+      if (actionType == 'update' && modalKeyList[primary]) {
+        modalKeyList['ori' + primary] = modalKeyList[primary];
+        modalNameList['ori' + primary] = '原始主键';
       }
       for (const key in modalKeyList) {
         // 判断是更新还是新增还是编辑
@@ -97,7 +96,7 @@ const ModalBuilder = ({
         };
         switch (actionType) {
           case 'update':
-            disabled = key === 'id' || key === 'oriname';
+            disabled = key === 'id' || key === 'ori' + primary;
             config.rules = [{ required: true, message: `Please input your ${key}` }];
             break;
           case 'delete':
@@ -127,17 +126,22 @@ const ModalBuilder = ({
             // config.validateStatus = 'erraor';
             config.help = (
               <span id={key} style={{ color: 'red' }}>
-                {errTip ||
-                  `参数值填写规则 => ${config_list_key[modalKeyList[key]] || '无可匹配规则'}`}
+                {errTip || `参数值填写规则 => ${autocomplete_key[key] || '无可匹配规则'}`}
               </span>
             );
             _Formlist.push(
               <Form.Item {...config}>
                 <AutoComplete
                   disabled={disabled}
-                  onChange={(value) => onChange(value)}
-                  options={options}
-                  placeholder="请输入要求的key值"
+                  onChange={(_value) => {
+                    const info = autocomplete_key[key] || {};
+                    setErrTip(`key = ${_value} 参数值 : ${info[_value] || '无可匹配规则'}`);
+                  }}
+                  placeholder={tipItems[key] || '请输入要求的key值'}
+                  options={getAutoCompleteKey(key)}
+                  filterOption={(inputValue, option) =>
+                    option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                  }
                 >
                   <Input />
                 </AutoComplete>
@@ -145,29 +149,45 @@ const ModalBuilder = ({
             );
             break;
           default:
-            let item = undefined
-            switch(keyItems[key]) {
-              case "textarea":
-                item = <Form.Item {...config}>
-                  <Input.TextArea showCount  />
-                </Form.Item>
+            let item = undefined;
+            switch (keyItems[key]) {
+              case 'textarea':
+                item = (
+                  <Form.Item {...config}>
+                    <Input.TextArea showCount />
+                  </Form.Item>
+                );
                 break;
               default:
-                item = <Form.Item {...config}>
-                  <AutoComplete
-                    disabled={disabled}
-                    onChange={(value) => onChange(value)}
-                    options={options}
-                    placeholder="请输入要求的key值"
-                  >
-                    <Input />
-                  </AutoComplete>
-                </Form.Item>
-                break
-            };
-            _Formlist.push(
-              item
-            );
+                config.help = (
+                  <span id={key} style={{ color: 'red' }}>
+                    {helpDictTip[key]}
+                  </span>
+                );
+                item = (
+                  <Form.Item {...config}>
+                    <AutoComplete
+                      disabled={disabled}
+                      onChange={(_value) => {
+                        const info = autocomplete_key[key] || {};
+                        const ok = { key: info };
+                        setHelpDictTip((preDict: any) => {
+                          return { ...preDict, ...ok };
+                        });
+                      }}
+                      placeholder={tipItems[key] || '请输入要求的key值'}
+                      options={getAutoCompleteKey(key)}
+                      filterOption={(inputValue, option) =>
+                        option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                      }
+                    >
+                      <Input />
+                    </AutoComplete>
+                  </Form.Item>
+                );
+                break;
+            }
+            _Formlist.push(item);
             break;
         }
       }

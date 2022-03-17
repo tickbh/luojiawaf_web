@@ -94,7 +94,7 @@ export default [
       },
       {
         path: '/set_config_data',
-        icon: 'HomeOutlined',
+        icon: 'SettingOutlined',
         name: 'set_config_data',
         routes: [
           {

@@ -38,15 +38,19 @@ const Index = () => {
   const [visibleValue, setVisibleValue] = useState(false);
   const [loadings, setLoadings] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([] as any);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [blockNameList, setBlockNameList] = useState([] as any);
   const [formValue, setFormValue] = useState({} as any);
   const keyList = ['url', 'action', 'actions'];
   const NameList = ['URL', '动作', '操作'];
-  const config_list_key = {
-    start: `前缀匹配`,
-    all: `所有匹配`,
+  const tipItems = {
+    url: '请输入白名单URI',
+    action: '请选择匹配规则',
+  };
+  const primary = 'url';
+  const autocomplete_key = {
+    action: {
+      start: `前缀匹配`,
+      all: `所有匹配`,
+    },
   };
   const { Search } = Input;
   const { Option } = Select;
@@ -127,36 +131,6 @@ const Index = () => {
     }
     return value;
   };
-  // 当页数和展示数量发生改变时,重新发起请求
-  const _getBlockName = async () => {
-    const result = await get_block_list({ ...values });
-    const nameList: any[] = [];
-    if (result.success < 0) {
-      return message.error({
-        content: result.err_msg,
-        style: {
-          fontSize: 16,
-        },
-      });
-    }
-    (result['lists'] || []).forEach((element: string, index: number) => {
-      const { name } = JSON.parse(element);
-      if (index == 0) {
-        values.name = name;
-        setBlockname(name);
-        // console.log(values, 8888);
-      }
-      if (name) {
-        nameList.push(
-          <Option value={name} key={index}>
-            {name}
-          </Option>,
-        );
-      }
-    });
-    setBlockNameList(nameList);
-    // _get_whiteurl_list();
-  };
 
   // 删除
   const _del_whiteurl_client = async (_values: any) => {
@@ -171,10 +145,6 @@ const Index = () => {
     console.log(value, '_add_whiteurl_client');
     return value;
   };
-
-  useEffect(() => {
-    _getBlockName();
-  }, []);
 
   useEffect(() => {
     if (!loadings) {
@@ -231,16 +201,6 @@ const Index = () => {
     setLoadings(value);
   };
 
-  const onSearch = (value: any) => {
-    console.log(value);
-    setSearchValue(value);
-    enterLoading(!loadings);
-  };
-
-  const selectOnchange = (value: any) => {
-    setBlockname(value);
-  };
-
   const setInputKeyName = (_keyList: string[], _NameList: string[]) => {
     const modalNameList = {};
     (_keyList || []).forEach((key: string | number, index: string | number) => {
@@ -272,7 +232,9 @@ const Index = () => {
       actionFunc: (_values: any) => actionFuncType[type](_values),
       modalKeyList: KeyNameList,
       modalNameList: setInputKeyName(keyList, NameList),
-      config_list_key: config_list_key,
+      autocomplete_key,
+      primary,
+      tipItems,
       loadings: loadings,
     });
   };
@@ -312,12 +274,6 @@ const Index = () => {
     }
   }
 
-  function cancel(e: any) {
-    console.log(e);
-    setIsModalVisible(false);
-    message.success('已取消操作');
-  }
-
   const beforesearchLayout = () => {
     return (
       <>
@@ -331,7 +287,9 @@ const Index = () => {
                     actionFunc: (_values: any) => _add_whiteurl_client(_values),
                     modalKeyList: getKeyNameList(keyList),
                     modalNameList: setInputKeyName(keyList, NameList),
-                    config_list_key: config_list_key,
+                    autocomplete_key,
+                    primary,
+                    tipItems,
                     loadings: loadings,
                   });
                 }}
