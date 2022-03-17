@@ -52,6 +52,10 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  let title = '洛甲WAF';
+  if (initialState?.currentUser?.project_name) {
+    title += '(' + initialState?.currentUser?.project_name + ')';
+  }
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -91,6 +95,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         ]
       : [],
     menuHeaderRender: undefined,
+    title: title,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     ...initialState?.settings,

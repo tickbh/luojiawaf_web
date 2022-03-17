@@ -15,6 +15,7 @@ declare namespace API {
     unreadCount?: number;
     country?: string;
     access?: string;
+    project_name?: string;
     geographic?: {
       province?: { label?: string; key?: string };
       city?: { label?: string; key?: string };

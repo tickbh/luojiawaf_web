@@ -8,10 +8,16 @@ if (NODE_ENV != 'development') {
   request_url = '';
 }
 let my_token: string = localStorage.getItem('waf-token') || '';
+export let my_project: string = localStorage.getItem('waf-project') || '';
 
 export function set_access_token(token: string) {
   my_token = token;
   localStorage.setItem('waf-token', token);
+}
+
+export function set_project_name(name: string) {
+  my_project = name;
+  localStorage.setItem('waf-project', name);
 }
 
 function do_request<T>(url: string, options: { [key: string]: any }): Promise<T> {
@@ -56,6 +62,18 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
 /** 修改密码 POST /waf/modify_password */
 export async function modify_password(body: any, options?: { [key: string]: any }) {
   return do_request<any>('/waf/modify_password?', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 修改密码 POST /waf/modify_password */
+export async function modify_project_name(body: any, options?: { [key: string]: any }) {
+  return do_request<any>('/waf/modify_project_name?', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
