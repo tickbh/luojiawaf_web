@@ -128,8 +128,9 @@ const Index = () => {
   // 在线IP数
   const _get_online_client_ips = async () => {
     const value = await get_online_client_ips({ ...values });
-    const count = value.count > 0 ? value.count : 0;
-    setOnline_client_ips(count.toString());
+    const count = value.count || 0;
+    const five_count = value.five_count || 0;
+    setOnline_client_ips(count.toString() + '/' + five_count.toString());
     return value;
   };
 
@@ -231,7 +232,7 @@ const Index = () => {
             >
               <Meta
                 avatar={<Avatar src="/cc_attck_times.png" />}
-                title={"CC攻击数 " + " 总计:"+cc_all_attck_times}
+                title={'CC攻击数 ' + ' 总计:' + cc_all_attck_times}
                 description={cc_attck_times}
               />
             </Card>

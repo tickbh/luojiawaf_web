@@ -178,7 +178,7 @@ const Index = () => {
 
         fix_data.push({
           timer: get_date(list[0]),
-          value: (Number(list[1]) / Number(list[2])).toFixed(2) + '%',
+          value: ((Number(list[1]) / Number(list[2])) * 100).toFixed(2) + '%',
           category: '内存使用率',
         });
       }
