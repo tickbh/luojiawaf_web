@@ -43,9 +43,14 @@ const Index = () => {
       white_url_check: `白名单url检查 on 为开启 `,
       post_attack_check: `post参数攻击请求on 为开启 `,
       url_args_attack: `参数攻击请求on 为开启 `,
+      stream_limit_check: `流量请求限制on 为开启`,
       random_record_value: `随机记录的值, 100%则填10000 `,
       limit_wd: '针对星期的限制，1/2/4，表示星期一,星期二,星期四做限制',
       limit_time: '针对时间段的限制, 如(12:00-13:00/18:30-20:30)表示12点到13点, 18点半到20点半',
+      'in_limit:*': '对所有的host的入流量进行限制, 单位为MB/s',
+      'out_limit:*': '对所有的host的出流量进行限制, 单位为MB/s',
+      'in_limit:localhost': '对localhost的入流量进行限制, 单位为MB/s',
+      'out_limit:localhost': '对localhost的出流量进行限制, 单位为MB/s',
       'limit_ip:127.0.0.1':
         '针对ip(127.0.0.1)如200/100 前者表示一分钟内的并发数/后者超过前者的数量的延时响应',
       'limit_uri:/test/limit':
