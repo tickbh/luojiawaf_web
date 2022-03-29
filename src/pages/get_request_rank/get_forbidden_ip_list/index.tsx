@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import { history } from 'umi';
 import {
   Button,
   Card,
@@ -38,8 +39,8 @@ const Index = (_isIndex: boolean) => {
   const [searchValue, setSearchValue] = useState('');
 
   const [formValue, setFormValue] = useState({} as any);
-  const keyList = ['client_ip_list', 'datetime', 'forbidden_reason', 'actions'];
-  const NameList = ['IP', '时间戳', '封禁原因', '操作'];
+  const keyList = ['client_ip_list', 'datetime', 'actions'];
+  const NameList = ['IP', '时间戳', '操作'];
   const { Search } = Input;
   const values = {
     page: page,
@@ -89,6 +90,14 @@ const Index = (_isIndex: boolean) => {
             key: o + 1,
             id: o,
             custom: 'lockdetails',
+          },
+          {
+            component: 'button',
+            type: 'primary',
+            text: '详情',
+            key: o + 1,
+            id: o,
+            custom: 'details',
           },
           {
             component: 'button',
@@ -317,6 +326,11 @@ const Index = (_isIndex: boolean) => {
           const value = add_forbidden_ip({ client_ip_list: dataSource.client_ip_list });
           console.log(value, '_add_forbidden_ip');
           return value;
+        }
+        if (type == 'details') {
+          return history.push(
+            `./get_client_ip_visit?ip=${encodeURI(dataSource.client_ip_list)}&name=`,
+          );
         }
         if (type == 'visit') {
           return onSearchVisit(dataSource.client_ip_list);

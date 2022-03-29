@@ -225,7 +225,7 @@ const Index = () => {
             <Card
               title="CC统计"
               extra={
-                <div onClick={() => history.push('get_request_rank/set_ccrule_list')}>
+                <div onClick={() => history.push('set_config_data/set_ccrule_list')}>
                   <span style={{ color: '#40a9ff' }}>配置防护</span>
                 </div>
               }
