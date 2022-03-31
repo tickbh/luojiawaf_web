@@ -48,6 +48,7 @@ const Index = () => {
       limit_wd: '针对星期的限制，1/2/4，表示星期一,星期二,星期四做限制',
       limit_time: '针对时间段的限制, 如(12:00-13:00/18:30-20:30)表示12点到13点, 18点半到20点半',
       config_forbidden_record: `配置封禁后如果有请求自动记录，请求on 为开启 `,
+      forbidden_action: `触发控制后, 选择的封禁方式, forbidden直接封禁, captcha行为验证(api方式的不适应)`,
       'in_limit:*': '对所有的host的入流量进行限制, 单位为MB/s',
       'out_limit:*': '对所有的host的出流量进行限制, 单位为MB/s',
       'in_limit:localhost': '对localhost的入流量进行限制, 单位为MB/s',

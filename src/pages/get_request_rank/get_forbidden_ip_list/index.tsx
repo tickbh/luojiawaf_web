@@ -314,7 +314,7 @@ const Index = (_isIndex: boolean) => {
     return modalNameList;
   };
 
-  const handleOk: any = (id: any, type: string) => {
+  const handleOk: any = async (id: any, type: string) => {
     let KeyNameList = '';
     console.log(id, type);
     for (const dataSource of useTableData.dataSource) {
@@ -323,9 +323,25 @@ const Index = (_isIndex: boolean) => {
           return onSearch(dataSource.client_ip_list);
         }
         if (type == 'againforbidden') {
-          const value = add_forbidden_ip({ client_ip_list: dataSource.client_ip_list });
-          console.log(value, '_add_forbidden_ip');
-          return value;
+          const result = await add_forbidden_ip({ client_ip_list: dataSource.client_ip_list });
+          if (result.success < 0) {
+            message.error({
+              content: result.err_msg,
+              style: {
+                fontSize: 16,
+              },
+            });
+          } else {
+            message.success({
+              content: '封禁成功',
+              style: {
+                fontSize: 16,
+              },
+            });
+            handleCancel(true);
+          }
+
+          return result;
         }
         if (type == 'details') {
           return history.push(
