@@ -1,32 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Card, Col, Input, message, Modal, Pagination, Row, Space, Table } from 'antd';
-import {
-  get_block_list,
-  add_block_client,
-  del_block_client,
-  search_forbidden_ip,
-} from '@/services/ant-design-pro/api';
+import { get_block_list, add_block_client, del_block_client } from '@/services/ant-design-pro/api';
 import ColumnsBuilder from '@/pages/Components/ColumnsBuilder';
-import { PlusCircleOutlined, PoweroffOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import ModalBuilder from '@/pages/Components/ModalBuilder';
 
 const Index = () => {
-  const [sort, setSort] = useState('name'); // 排序升降
-  const [order, setOrder] = useState('asc'); // 排序类型
   const [page, setPage] = useState(1); // 排序类型
   const [pagecount, setPagecount] = useState(10); // 排序类型
   const [useTableData, setUseTableData] = useState({} as any);
   const [visibleValue, setVisibleValue] = useState(false);
   const [loadings, setLoadings] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([] as any);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
 
   const [formValue, setFormValue] = useState({} as any);
-  const keyList = ['host', 'name', 'actions'];
-  const NameList = ['host', '名称', '操作'];
-  const { Search } = Input;
+  const keyList = ['server_id', 'name', 'actions'];
+  const NameList = ['服务id', '名称', '操作'];
   const values = {
     page: page,
     pagecount: pagecount,
@@ -47,7 +37,6 @@ const Index = () => {
           type: keyList[i],
           ellipsis: true,
           fixed: '',
-          // "sorter": true,
         });
     }
     columns[columns.length - 1].fixed = 'right';
@@ -57,7 +46,7 @@ const Index = () => {
       const isMap = JSON.parse(element);
       dataSource.push({
         key: index,
-        host: isMap.host || '',
+        server_id: isMap.server_id || '',
         name: isMap.name || '',
         oriname: isMap.name || '',
         actions: [
@@ -135,16 +124,6 @@ const Index = () => {
     setFormValue({ ...value });
   };
 
-  const tableChangeHandler = (_: any, __: any, sorter: any) => {
-    if (sorter.order === undefined) {
-      setSort('');
-    } else {
-      const orderBy = sorter.order === 'ascend' ? 'asc' : 'desc';
-      setOrder(`${orderBy}`);
-      setSort(`${sorter.field}`);
-    }
-  };
-
   const paginationChangeHandler = (_page: any, _per_page: any) => {
     setPage(_page);
     setPagecount(_per_page);
@@ -164,16 +143,6 @@ const Index = () => {
 
   const onSelectChange = (_selectedRowKeys: any) => {
     setSelectedRowKeys(_selectedRowKeys);
-  };
-
-  const enterLoading = (value: boolean) => {
-    setLoadings(value);
-  };
-
-  const onSearch = (value: any) => {
-    console.log(value);
-    setSearchValue(value);
-    enterLoading(!loadings);
   };
 
   const setInputKeyName = (_keyList: string[], _NameList: string[]) => {
@@ -239,12 +208,6 @@ const Index = () => {
       });
       handleCancel(true);
     }
-  }
-
-  function cancel(e: any) {
-    console.log(e);
-    setIsModalVisible(false);
-    message.success('已取消操作');
   }
 
   const beforesearchLayout = () => {
@@ -337,7 +300,6 @@ const Index = () => {
             scroll={{ y: 600 }}
             pagination={false}
             loading={loadings}
-            onChange={tableChangeHandler}
             showSorterTooltip={true}
             bordered
             // summary={getTableData?.summary}
